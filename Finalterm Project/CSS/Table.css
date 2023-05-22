@@ -1,0 +1,39 @@
+.heading-table{
+    background-color: rgb(18, 5, 49);
+    position: sticky;
+    opacity: 0.7;
+}
+.heading-table h1{
+    color: rgb(252, 250, 251);
+    padding: 10px;
+}
+.title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: azure;
+    margin-top: 10px;
+}
+
+table{
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+table tr:hover{
+transition: 0.25s;
+}
+
+th{
+    background-color: rgb(43, 60, 18);
+    color: white;
+}
+td{
+    text-align: center;
+}
+ table tr:hover{
+    background-color: #10261a;
+    transform: scale(0.9);
+    color: aliceblue;
+    border-radius: 10px;
+}

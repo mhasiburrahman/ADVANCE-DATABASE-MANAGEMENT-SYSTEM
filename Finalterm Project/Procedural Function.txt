@@ -1,0 +1,173 @@
+create or replace package easy_store1 as
+procedure emp_sal_up(eno employee.e_id%type,esal job.salary%type);
+end easy_store1;
+create or replace package body easy_store1
+as
+function validEmpId(eno in employee.e_id%type)
+return boolean
+is
+eid_count employee.e_id%type;
+begin
+select count(*) into eid_count from employee where e_id=eno;
+if eid_count=0 then
+return false;
+else return true;
+end if;
+end validEmpId;
+procedure emp_sal_up(eno employee.e_id%type,esal job.salary%type)
+is
+jid job.job_id%type;
+inval_emp exception;
+begin
+if validEmpId(eno) then
+select job.job_id into jid from employee,job where employee.job_id=job.job_id and employee.e_id=eno;
+update job set salary=esal where job_id=jid;
+else
+raise inval_emp;
+end if;
+exception
+when inval_emp then
+raise_application_error(-20202,'Employee does not exist!');
+when others then
+raise_application_error(-20202,'Something went wrong');
+end emp_sal_up;
+end easy_store1;
+
+*************************************************************************************************************
+
+create or replace package easy_store3 as
+procedure insert_sale(sid sales.sales_id%type,pid sales.p_id%type,qan sales.quantity%type,eid sales.e_id%type,cid sales.c_id%type,tamount sales.total_amount%type);
+end easy_store3;
+create or replace package body easy_store3
+as
+function isValidCustomerId(cid in customer.c_id%type)
+return boolean
+is
+cid_count sales.c_id%type;
+begin
+select count(*) into cid_count from customer where c_id=cid;
+if cid_count=0 then
+return false;
+else return true;
+end if;
+end isValidCustomerId;
+function validEmpId(eno in employee.e_id%type)
+return boolean
+is
+eid_count employee.e_id%type;
+begin
+select count(*) into eid_count from employee where e_id=eno;
+if eid_count=0 then
+return false;
+else return true;
+end if;
+end validEmpId;
+function validProId(pno in product.p_id%type)
+return boolean
+is
+pid_count product.p_id%type;
+begin
+select count(*) into pid_count from product where p_id=pno;
+if pid_count=0 then
+return false;
+else return true;
+end if;
+end validProId;
+function haveProductQuantity(pno in product.p_id%type,quan in product.quantity%type)
+return boolean
+is
+quant product.quantity%type;
+begin
+select quantity into quant from product where p_id=pno;
+if quant<quan then
+return false;
+else return true;
+end if;
+end haveProductQuantity;
+procedure insert_sale(sid sales.sales_id%type,pid sales.p_id%type,qan sales.quantity%type,eid sales.e_id%type,cid sales.c_id%type,tamount sales.total_amount%type)
+is
+inval_sid exception;
+inval_pro exception;
+inval_qan exception;
+inval_eid exception;
+inval_cid exception;
+begin
+if sid <=0 then
+raise inval_sid;
+elsif validProId(pid) = FALSE then
+raise inval_pro;
+elsif haveProductQuantity(pid,qan)= FALSE then
+raise inval_qan;
+elsif validEmpId(eid)= FALSE then
+raise inval_eid;
+elsif isValidCustomerId(cid)= FALSE then
+raise inval_cid;
+else
+insert into sales values(sid,pid,qan,eid,cid,tamount);
+end if;
+exception
+when inval_sid then
+raise_application_error(-20202,'Invalid Saled Id!');
+when inval_pro then
+raise_application_error(-20202,'Porduct does not exist!');
+when inval_qan then
+raise_application_error(-20202,'Product quantity does not available!');
+when inval_eid then
+raise_application_error(-20202,'Employee id does not exist!');
+when inval_cid then
+raise_application_error(-20202,'Customer Id does not exist!');
+when others then
+raise_application_error(-20202,'Something went wrong');
+end insert_sale;
+end easy_store3;
+
+*************************************************************************************************************
+
+create or replace package easy_store2 as
+procedure delete_customer(cid customer.c_id%type);
+end easy_store2;
+create or replace package body easy_store2
+as
+function isValidCustomerId(cid in customer.c_id%type)
+return boolean
+is
+cid_count sales.c_id%type;
+begin
+select count(*) into cid_count from customer where c_id=cid;
+if cid_count=0 then
+return false;
+else return true;
+end if;
+end isValidCustomerId;
+function isAvailableCustomerForSale(cid in sales.c_id%type)
+return boolean
+is
+cid_count sales.c_id%type;
+begin
+select count(*) into cid_count from sales where c_id=cid;
+if cid_count=0 then
+return false;
+else return true;
+end if;
+end isAvailableCustomerForSale;
+procedure delete_customer(cid customer.c_id%type)
+is
+inval_cus exception;
+availableCustomerForSale exception;
+begin
+if isAvailableCustomerForSale(cid) then
+raise availableCustomerForSale;
+elsif isValidCustomerId(cid) then
+delete from customer where c_id=cid;
+else
+raise inval_cus;
+end if;
+exception
+when availableCustomerForSale then
+raise_application_error(-20202,'Customer is already included for sales invoice');
+when inval_cus then
+raise_application_error(-20202,'Customer does not exists!');
+when others then
+raise_application_error(-20202,'Something went wrong');
+end delete_customer;
+end easy_store2;

@@ -1,0 +1,96 @@
+*{
+    margin: 0;
+    padding: 0%;
+}
+.header{
+    position: sticky;
+    width: 100%;
+    height: auto;
+    background-color: rgb(38, 28, 65);
+    margin: 0;
+}
+.welcome-text h1{
+    display: inline;
+    color: gray;
+}
+.welcome-text{
+    text-align: right;
+    margin-right: 10px;
+}
+.logo h1{
+    display: inline;
+    color: white;
+
+}
+.logo{
+    margin-left: 10px;
+}
+
+.menubar{
+    position: sticky;
+    background-color: rgb(29, 11, 29);
+    width: 100%;
+    height: auto;
+    text-align: center;
+    
+}
+.menubar
+{
+    width: 100%;
+    margin: -1px 0vw;
+    padding: 38px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+ 
+}
+.menubar ul li{
+    list-style: none;
+    display: inline-block;
+    margin: 0 20px;
+    position: relative;
+    }
+   .menubar ul li a{
+   text-decoration: none;
+   color: whitesmoke;
+   text-transform: uppercase;
+   transition: 0.5s;
+
+   }
+   .menubar ul li::after
+   {
+       content: '';
+       height: 4px;
+       width:0;
+       background: #088 ;
+       position: absolute;
+       left:0;
+       bottom: 0px;
+       overflow: hidden;
+       transition: 0.5s;
+   }
+   .menubar ul li:hover::after
+   {
+   width: 100%;
+   }
+   .menubar ul li a:hover{
+       color: coral;
+   }
+
+   @media  screen and (max-width:800px)
+   {
+    .menubar ul {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        text-align: center;
+        font-weight: bolder;
+        width: 100%;
+        float: right;
+    }
+    
+    .menubar ul li:hover::after
+{
+width: 0;
+}
+   }
